@@ -9,7 +9,7 @@ public interface ContactDao {
 
     List<Contact> findAllWithDetail();
 
-    Contact findByid(Long id);
+    Contact findById(Long id);
 
     Contact save(Contact contact);
 

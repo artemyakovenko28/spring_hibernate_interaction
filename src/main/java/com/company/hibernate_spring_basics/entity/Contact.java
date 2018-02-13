@@ -8,18 +8,40 @@ import java.util.Set;
 
 @Entity
 @Table(name = "contact")
+@NamedQueries({@NamedQuery(name = "Contact.findAllWithDetail",
+        query = "select distinct c from Contact c " +
+                "left join fetch c.contactTelDetails t left join fetch c.hobbies h"),
+@NamedQuery(name = "Contact.findById",
+        query = "select distinct c from Contact c " +
+                "left join fetch c.contactTelDetails t left join fetch c.hobbies where c.id = :id")})
 public class Contact implements Serializable {
-    private Long id;
-    private int version;
-    private String firstName;
-    private String lastName;
-    private Date birthDate;
-    private Set<ContactTelDetail> contactTelDetails = new HashSet<ContactTelDetail>();
-    private Set<Hobby> hobbies = new HashSet<Hobby>();
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    private Long id;
+
+    @Version
+    @Column(name = "version")
+    private int version;
+
+    @Column(name = "first_name")
+    private String firstName;
+
+    @Column(name = "last_name")
+    private String lastName;
+
+    @Temporal(TemporalType.DATE)
+    @Column(name = "birth_date")
+    private Date birthDate;
+
+    @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ContactTelDetail> contactTelDetails = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "contact_hobby_detail", joinColumns = @JoinColumn(name = "contact_id"),
+            inverseJoinColumns = @JoinColumn(name = "hobby_id"))
+    private Set<Hobby> hobbies = new HashSet<>();
+
     public Long getId() {
         return id;
     }
@@ -28,8 +50,6 @@ public class Contact implements Serializable {
         this.id = id;
     }
 
-    @Version
-    @Column(name = "version")
     public int getVersion() {
         return version;
     }
@@ -38,7 +58,6 @@ public class Contact implements Serializable {
         this.version = version;
     }
 
-    @Column(name = "first_name")
     public String getFirstName() {
         return firstName;
     }
@@ -47,7 +66,6 @@ public class Contact implements Serializable {
         this.firstName = firstName;
     }
 
-    @Column(name = "last_name")
     public String getLastName() {
         return lastName;
     }
@@ -56,8 +74,6 @@ public class Contact implements Serializable {
         this.lastName = lastName;
     }
 
-    @Temporal(TemporalType.DATE)
-    @Column(name = "birth_date")
     public Date getBirthDate() {
         return birthDate;
     }
@@ -66,7 +82,6 @@ public class Contact implements Serializable {
         this.birthDate = birthDate;
     }
 
-    @OneToMany(mappedBy = "contact", cascade = CascadeType.ALL, orphanRemoval = true)
     public Set<ContactTelDetail> getContactTelDetails() {
         return contactTelDetails;
     }
@@ -75,9 +90,6 @@ public class Contact implements Serializable {
         this.contactTelDetails = contactTelDetails;
     }
 
-    @ManyToMany
-    @JoinTable(name = "contact_hobby_detail", joinColumns = @JoinColumn(name = "contact_id"),
-    inverseJoinColumns = @JoinColumn(name = "hobby_id"))
     public Set<Hobby> getHobbies() {
         return hobbies;
     }

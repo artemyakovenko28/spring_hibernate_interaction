@@ -6,15 +6,33 @@ import java.io.Serializable;
 @Entity
 @Table(name = "contact_tel_detail")
 public class ContactTelDetail implements Serializable {
-    private int id;
-    private int version;
-    private String telType;
-    private String telNumber;
-    private Contact contact;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    private int id;
+
+    @Version
+    @Column(name = "version")
+    private int version;
+
+    @Column(name = "tel_type")
+    private String telType;
+
+    @Column(name = "tel_number")
+    private String telNumber;
+
+    @ManyToOne
+    @JoinColumn(name = "contact_id")
+    private Contact contact;
+
+    public ContactTelDetail() {
+    }
+
+    public ContactTelDetail(String telType, String telNumber) {
+        this.telType = telType;
+        this.telNumber = telNumber;
+    }
+
     public int getId() {
         return id;
     }
@@ -23,8 +41,6 @@ public class ContactTelDetail implements Serializable {
         this.id = id;
     }
 
-    @Version
-    @Column(name = "version")
     public int getVersion() {
         return version;
     }
@@ -33,7 +49,6 @@ public class ContactTelDetail implements Serializable {
         this.version = version;
     }
 
-    @Column(name = "tel_type")
     public String getTelType() {
         return telType;
     }
@@ -42,7 +57,6 @@ public class ContactTelDetail implements Serializable {
         this.telType = telType;
     }
 
-    @Column(name = "tel_number")
     public String getTelNumber() {
         return telNumber;
     }
@@ -51,8 +65,6 @@ public class ContactTelDetail implements Serializable {
         this.telNumber = telNumber;
     }
 
-    @ManyToOne
-    @JoinColumn(name = "contact_id")
     public Contact getContact() {
         return contact;
     }

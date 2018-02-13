@@ -24,22 +24,35 @@ public class ContactDaoImpl implements ContactDao {
 
     @Transactional(readOnly = true)
     public List<Contact> findAll() {
-        return (List<Contact>) sessionFactory.getCurrentSession().createQuery("from Contact c").list();
+        return sessionFactory.getCurrentSession().createQuery("from Contact c").list();
     }
 
+    @Transactional(readOnly = true)
     public List<Contact> findAllWithDetail() {
-        return null;
+//        use NamedQuery
+        return sessionFactory.getCurrentSession().createNamedQuery("Contact.findAllWithDetail").list();
+//        use Query
+//        return sessionFactory
+//                .getCurrentSession()
+//                .createQuery("select distinct c " +
+//                        "from Contact c left join fetch c.contactTelDetails t left join fetch c.hobbies h").list();
     }
 
-    public Contact findByid(Long id) {
-        return null;
+    public Contact findById(Long id) {
+        return (Contact) sessionFactory.getCurrentSession()
+                .createNamedQuery("Contact.findById")
+                .setParameter("id", id)
+                .uniqueResult();
     }
 
     public Contact save(Contact contact) {
-        return null;
+        sessionFactory.getCurrentSession().saveOrUpdate(contact);
+        logger.info("Contact saved with id: " + contact.getId());
+        return contact;
     }
 
     public void delete(Contact contact) {
-
+        sessionFactory.getCurrentSession().delete(contact);
+        logger.info("Contact deleted with id: " + contact.getId());
     }
 }
