@@ -86,4 +86,19 @@ public class ContactServiceImplTest {
         contactService.delete(contact);
         listContactsWithDetail(contactService.findAllWithDetail());
     }
+
+    @Test
+    public void findAllByNativeQuery() {
+        List<Contact> contacts = contactService.findAllByNativeQuery();
+        System.out.println("All contacts:");
+        for (Contact contact : contacts) {
+            System.out.println(contact);
+        }
+    }
+
+    @Test
+    public void findByCriteriaQuery() {
+        List<Contact> contacts = contactService.findByCriteriaQuery("John", "Smith");
+        listContactsWithDetail(contacts);
+    }
 }

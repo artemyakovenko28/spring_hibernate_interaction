@@ -1,5 +1,6 @@
 package com.company.hibernate_spring_basics.service.impl;
 
+import com.company.hibernate_spring_basics.Contact_;
 import com.company.hibernate_spring_basics.entity.Contact;
 import com.company.hibernate_spring_basics.service.ContactService;
 import org.apache.log4j.Logger;
@@ -9,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.*;
 import java.util.List;
 
 @Service("jpaContactService")
@@ -17,6 +19,9 @@ import java.util.List;
 public class ContactServiceImpl implements ContactService {
 
     private Logger logger = Logger.getLogger(ContactServiceImpl.class);
+
+    private static final String SELECT_ALL_CONTACTS_NATIVE_QUERY =
+            "SELECT id, first_name, last_name, birth_date, version FROM contact";
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -62,5 +67,44 @@ public class ContactServiceImpl implements ContactService {
             entityManager.remove(contactToDelete);
         }
         logger.info("Contact with id: " + contact.getId() + "deleted successfully");
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Contact> findAllByNativeQuery() {
+//        return entityManager
+//                .createNativeQuery(SELECT_ALL_CONTACTS_NATIVE_QUERY, Contact.class)
+//                .getResultList();
+//        using resultSetMapping
+        return entityManager
+                .createNativeQuery(SELECT_ALL_CONTACTS_NATIVE_QUERY, "contactResult")
+                .getResultList();
+    }
+
+    @Override
+    public List<Contact> findByCriteriaQuery(String firstName, String lastName) {
+        logger.info("Finding contact for firstName: " + firstName + " and lastName : " + lastName);
+
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Contact> criteriaQuery = cb.createQuery(Contact.class);
+        Root<Contact> contactRoot = criteriaQuery.from(Contact.class);
+
+        contactRoot.fetch(Contact_.contactTelDetails, JoinType.LEFT);
+        contactRoot.fetch(Contact_.hobbies, JoinType.LEFT);
+        criteriaQuery.select(contactRoot).distinct(true);
+
+        Predicate criteria = cb.conjunction();
+        if (firstName != null) {
+            Predicate p = cb.equal(contactRoot.get(Contact_.firstName), firstName);
+            criteria = cb.and(criteria, p);
+        }
+        if (lastName != null) {
+            Predicate p = cb.equal(contactRoot.get(Contact_.lastName), lastName);
+            criteria = cb.and(criteria, p);
+        }
+
+        criteriaQuery.where(criteria);
+
+        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 }
