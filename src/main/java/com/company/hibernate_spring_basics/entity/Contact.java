@@ -8,12 +8,14 @@ import java.util.Set;
 
 @Entity
 @Table(name = "contact")
-@NamedQueries({@NamedQuery(name = "Contact.findAllWithDetail",
-        query = "select distinct c from Contact c " +
-                "left join fetch c.contactTelDetails t left join fetch c.hobbies h"),
-@NamedQuery(name = "Contact.findById",
-        query = "select distinct c from Contact c " +
-                "left join fetch c.contactTelDetails t left join fetch c.hobbies where c.id = :id")})
+@NamedQueries({@NamedQuery(name = "Contact.findAll",
+        query = "select c from Contact c"),
+        @NamedQuery(name = "Contact.findAllWithDetail",
+                query = "select distinct c from Contact c " +
+                        "left join fetch c.contactTelDetails t left join fetch c.hobbies h"),
+        @NamedQuery(name = "Contact.findById",
+                query = "select distinct c from Contact c " +
+                        "left join fetch c.contactTelDetails t left join fetch c.hobbies h where c.id = :id")})
 public class Contact implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -102,5 +104,9 @@ public class Contact implements Serializable {
     public String toString() {
         return "Contact - Id: " + id + ", First name: " + firstName +
                 ", Last name: " + lastName + ", Birthday: " + birthDate;
+    }
+
+    public void addContactTelDetail(ContactTelDetail contactTelDetail) {
+        contactTelDetails.add(contactTelDetail);
     }
 }

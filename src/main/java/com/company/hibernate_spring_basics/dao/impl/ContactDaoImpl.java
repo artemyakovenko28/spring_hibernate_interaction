@@ -24,13 +24,15 @@ public class ContactDaoImpl implements ContactDao {
 
     @Transactional(readOnly = true)
     public List<Contact> findAll() {
-        return sessionFactory.getCurrentSession().createQuery("from Contact c").list();
+        return sessionFactory.getCurrentSession()
+                .createQuery("from Contact c", Contact.class).list();
     }
 
     @Transactional(readOnly = true)
     public List<Contact> findAllWithDetail() {
 //        use NamedQuery
-        return sessionFactory.getCurrentSession().createNamedQuery("Contact.findAllWithDetail").list();
+        return sessionFactory.getCurrentSession()
+                .createNamedQuery("Contact.findAllWithDetail", Contact.class).list();
 //        use Query
 //        return sessionFactory
 //                .getCurrentSession()
@@ -38,6 +40,7 @@ public class ContactDaoImpl implements ContactDao {
 //                        "from Contact c left join fetch c.contactTelDetails t left join fetch c.hobbies h").list();
     }
 
+    @Transactional(readOnly = true)
     public Contact findById(Long id) {
         return (Contact) sessionFactory.getCurrentSession()
                 .createNamedQuery("Contact.findById")
