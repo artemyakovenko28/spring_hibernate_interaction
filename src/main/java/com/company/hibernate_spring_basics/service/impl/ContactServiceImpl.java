@@ -107,4 +107,9 @@ public class ContactServiceImpl implements ContactService {
 
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
+
+    @Override
+    public Long countAll() {
+        return null;
+    }
 }
