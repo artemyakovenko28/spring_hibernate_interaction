@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service("contactServiceSpringDataJpa")
 @Repository
@@ -33,7 +34,7 @@ public class ContactServiceSpringDataJpaImpl implements ContactService {
     @Transactional(readOnly = true)
     @Override
     public Contact findById(Long id) {
-        return contactRepository.findById(id).get();
+        return contactRepository.findById(id).orElse(null);
     }
 
     @Override

@@ -21,11 +21,10 @@ public class ContactSummaryServiceImpl implements ContactSummaryService {
     @Transactional(readOnly = true)
     @Override
     public List<ContactSummary> findAll() {
-        List<ContactSummary> result = entityManager.createQuery(
+        return entityManager.createQuery(
                 "select new com.company.hibernate_spring_basics.entity.ContactSummary(" +
                         "c.firstName, c.lastName, t.telNumber) " +
                         "from Contact c left join c.contactTelDetails t " +
                         "where t.telType='Home'", ContactSummary.class).getResultList();
-        return result;
     }
 }
