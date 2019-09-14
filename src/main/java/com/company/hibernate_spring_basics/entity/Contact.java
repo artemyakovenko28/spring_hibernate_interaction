@@ -42,8 +42,9 @@ public class Contact implements Serializable {
     private Set<ContactTelDetail> contactTelDetails = new HashSet<>();
 
     @ManyToMany
-    @JoinTable(name = "contact_hobby_detail", joinColumns = @JoinColumn(name = "contact_id"),
-            inverseJoinColumns = @JoinColumn(name = "hobby_id"))
+    @JoinTable(name = "contact_hobby_detail",
+            joinColumns = @JoinColumn(name = "contact_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "hobby_id", referencedColumnName = "hobby_id"))
     private Set<Hobby> hobbies = new HashSet<>();
 
     public Long getId() {

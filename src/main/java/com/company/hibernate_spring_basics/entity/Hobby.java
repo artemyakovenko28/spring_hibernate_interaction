@@ -12,8 +12,9 @@ public class Hobby implements Serializable {
     private String hobbyId;
 
     @ManyToMany
-    @JoinTable(name = "contact_hobby_detail", joinColumns = @JoinColumn(name = "hobby_id"),
-            inverseJoinColumns = @JoinColumn(name = "contact_id"))
+    @JoinTable(name = "contact_hobby_detail",
+            joinColumns = @JoinColumn(name = "hobby_id", referencedColumnName = "hobby_id"),
+            inverseJoinColumns = @JoinColumn(name = "contact_id", referencedColumnName = "id"))
     private Set<Contact> contacts;
 
     public String getHobbyId() {

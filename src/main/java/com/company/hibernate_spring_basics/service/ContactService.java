@@ -15,7 +15,7 @@ public interface ContactService {
 
     void delete(Contact contact);
 
-    List<Contact> findAllByNativeQuery();
+    List findAllByNativeQuery();
 
     List<Contact> findByCriteriaQuery(String firstName, String lastName);
 
